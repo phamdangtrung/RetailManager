@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 
 namespace DataManagerAPI.Controllers
 {
@@ -13,7 +14,8 @@ namespace DataManagerAPI.Controllers
         // GET api/values
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            String userID = RequestContext.Principal.Identity.GetUserId();
+            return new string[] { "value1", "value2", userID };
         }
 
         // GET api/values/5
