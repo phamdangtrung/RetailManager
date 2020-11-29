@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Linq;
 using System.Web.Http;
 using DataManagerAPI.Library.DataAccess;
 using DataManagerAPI.Library.Models;
@@ -14,12 +10,13 @@ namespace DataManagerAPI.Controllers
     [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
-        public List<UserModel> GetById()
+        [HttpGet]
+        public UserModel GetById()
         {
             string userId = RequestContext.Principal.Identity.GetUserId();
             UserData data = new UserData();
 
-            return data.GetUserById(userId);
+            return data.GetUserById(userId).First();
         }
     }
 }
