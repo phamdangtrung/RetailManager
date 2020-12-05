@@ -2,6 +2,7 @@
 using System;
 using RMDesktopUI.Library.Api;
 using System.Threading.Tasks;
+using RMDesktopUI.EventModels;
 
 namespace RMDesktopUI.ViewModels
 {
@@ -10,10 +11,12 @@ namespace RMDesktopUI.ViewModels
         private string _userName;
         private string _password;
         private string _errorMessage;
-        private IAPIHelper _apiHelper;
-        public LoginViewModel(IAPIHelper apiHelper)
+        private readonly IAPIHelper _apiHelper;
+        private readonly IEventAggregator _events;
+        public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events)
         {
             _apiHelper = apiHelper;
+            _events = events;
         }
 
         public string UserName
@@ -88,6 +91,8 @@ namespace RMDesktopUI.ViewModels
 
                 //Capture more user info
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
+                _events.PublishOnUIThread(new LogOnEvent());
             }
             catch (Exception ex)
             {

@@ -11,10 +11,6 @@ namespace RMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
     #region List
-    /***********
-     * Lists *
-     ***********/
-
         //List products
         private BindingList<string> _products;
 
@@ -45,14 +41,10 @@ namespace RMDesktopUI.ViewModels
 
 
     #region Textboxes and string fields
-        /*******************************
-         * Textboxes and string fields *
-         *******************************/
-
         //Item quantity text box
-        private string _itemQuantity;
+        private int _itemQuantity;
 
-        public string ItemQuantity
+        public int ItemQuantity
         {
             get { return _itemQuantity; }
             set
@@ -94,10 +86,6 @@ namespace RMDesktopUI.ViewModels
 
 
     #region Buttons
-        /***********
-         * Buttons *
-         ***********/
-
         //Button Add to cart
         public bool CanAddToCart
         {
@@ -151,6 +139,7 @@ namespace RMDesktopUI.ViewModels
         {
 
         }
-    }
     #endregion
+
+    }
 }
