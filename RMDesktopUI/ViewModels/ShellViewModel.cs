@@ -10,7 +10,6 @@ namespace RMDesktopUI.ViewModels
 {
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
-        private LoginViewModel _loginVM;
         private readonly IEventAggregator _events;
         private SalesViewModel _salesVM;
         private SimpleContainer _container;
