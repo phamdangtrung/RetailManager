@@ -1,20 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Models;
 
 namespace RMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-    #region List
-        //List products
-        private BindingList<string> _products;
+        private IProductEndpoint _productEndpoint;
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
 
-        public BindingList<string> Products
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndpoint.GetAll();
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+        #region Lists
+        //List products
+        private BindingList<ProductModel> _products;
+
+        public BindingList<ProductModel> Products
         {
             get { return _products; }
             set
@@ -37,10 +53,10 @@ namespace RMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => Cart);
             }
         }
-    #endregion
+        #endregion
 
 
-    #region Textboxes and string fields
+        #region Textboxes and string fields
         //Item quantity text box
         private int _itemQuantity;
 
@@ -82,10 +98,10 @@ namespace RMDesktopUI.ViewModels
                 return "$0.00";
             }
         }
-    #endregion
+        #endregion
 
 
-    #region Buttons
+        #region Buttons
         //Button Add to cart
         public bool CanAddToCart
         {
@@ -139,7 +155,7 @@ namespace RMDesktopUI.ViewModels
         {
 
         }
-    #endregion
+        #endregion
 
     }
 }
