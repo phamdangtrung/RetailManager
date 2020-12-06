@@ -50,7 +50,8 @@
         <ListBox x:Name="Products" 
                  Grid.Row="2" Grid.Column="1"
                  MinHeight="200"
-                 MinWidth="150">
+                 MinWidth="150"
+                 SelectedItem="{Binding SelectedProduct}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding ProductName}"/>
@@ -87,7 +88,13 @@
                  Grid.Row="2" 
                  Grid.Column="3"
                  MinHeight="200"
-                 MinWidth="150"/>
+                 MinWidth="150">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayText}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <DockPanel Grid.Row="3" Grid.Column="3" 
                    VerticalAlignment="Top"
                    Margin="5 5 5 0">
