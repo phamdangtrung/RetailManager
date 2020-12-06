@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
 
 namespace RMDesktopUI.ViewModels
@@ -10,9 +11,12 @@ namespace RMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private IProductEndpoint _productEndpoint;
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        private IConfigHelper _configHelper;
+
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
             _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -27,7 +31,9 @@ namespace RMDesktopUI.ViewModels
             Products = new BindingList<ProductModel>(productList);
         }
 
+
         #region Lists
+
         //List products
         private BindingList<ProductModel> _products;
 
@@ -54,10 +60,12 @@ namespace RMDesktopUI.ViewModels
                 NotifyOfPropertyChange(() => Cart);
             }
         }
+
         #endregion
 
 
         #region Textboxes and string fields
+
         //Item quantity text box
         private int _itemQuantity = 1;
 
@@ -72,38 +80,67 @@ namespace RMDesktopUI.ViewModels
             }
         }
 
+
         //SubTotal field
         public string SubTotal
         {
             get
             {
-                decimal subTotal = 0;
+                decimal subTotal = CalculateSubTotal();
 
-                foreach (var item in Cart)
-                {
-                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-                }
                 return subTotal.ToString(format: "C");
             }
         }
 
+        private decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
 
-        //SubTotal field
+            foreach (var item in Cart)
+            {
+                subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+            }
+
+            return subTotal;
+        }
+        
+
+        //Tax field
         public string Tax
         {
             get
             {
-                return "$0.00";
+                decimal taxAmount = CalculateTax();
+
+                return taxAmount.ToString(format: "C");
             }
         }
 
+        private decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRate();
 
-        //SubTotal field
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+                }
+
+            }
+
+            return (taxAmount / 100);
+        }
+
+
+        //Total field
         public string Total
         {
             get
             {
-                return "$0.00";
+                decimal total = CalculateSubTotal() + CalculateTax();
+                return total.ToString(format: "C");
             }
         }
         #endregion
@@ -153,6 +190,8 @@ namespace RMDesktopUI.ViewModels
             ItemQuantity = 1;
 
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
             Cart.ResetBindings();
         }
 
@@ -172,6 +211,8 @@ namespace RMDesktopUI.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
 
