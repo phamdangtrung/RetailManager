@@ -8,7 +8,6 @@ namespace DataManagerAPI.Controllers
     [Authorize]
     public class ProductController : ApiController
     {
-        // GET: api/Test
         public List<ProductModel> Get()
         {
             ProductData productData = new ProductData();

@@ -17,5 +17,13 @@ namespace DataManagerAPI.Library.DataAccess
             var output = sql.LoadData<ProductModel, dynamic>("[dbo].[spProducts_GetAll]", new { }, "RMDatabase");
             return output;
         }
+
+        public ProductModel GetProductById(int productId)
+        {
+            SqlDataAcces sql = new SqlDataAcces();
+
+            var output = sql.LoadData<ProductModel, dynamic>("[dbo].[spProducts_GetById]", new { id = productId }, "RMDatabase").FirstOrDefault();
+            return output;
+        }
     }
 }

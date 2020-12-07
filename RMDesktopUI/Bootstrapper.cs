@@ -28,6 +28,7 @@ namespace RMDesktopUI
         protected override void Configure()
         {
             _container.Instance(_container)
+                .PerRequest<ISaleEndpoint, SaleEndpoint>()
                 .PerRequest<IProductEndpoint, ProductEndpoint>();
 
             //EventAggregator handles events

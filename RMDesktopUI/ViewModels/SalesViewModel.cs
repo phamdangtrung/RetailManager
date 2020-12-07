@@ -10,13 +10,17 @@ namespace RMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private IProductEndpoint _productEndpoint;
         private IConfigHelper _configHelper;
+        private IProductEndpoint _productEndpoint;
+        private ISaleEndpoint _saleEndpoint;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndpoint productEndpoint, 
+            ISaleEndpoint saleEndpoint,
+            IConfigHelper configHelper)
         {
-            _productEndpoint = productEndpoint;
             _configHelper = configHelper;
+            _productEndpoint = productEndpoint;
+            _saleEndpoint = saleEndpoint;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -196,6 +200,7 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
             Cart.ResetBindings();
         }
 
@@ -217,6 +222,7 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
 
@@ -227,18 +233,33 @@ namespace RMDesktopUI.ViewModels
             {
                 bool output = false;
                 //Make sure a product is selected
-
+                if (Cart.Count > 0)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
 
-        public void CheckOut()
+        public async Task CheckOut()
         {
+            SaleModel sale = new SaleModel();
+
+            foreach (var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart,
+                });
+            }
+
+            await _saleEndpoint.PostSale(sale);
 
         }
         #endregion
 
-
+        
         #region Models
 
         private ProductModel _selectedProduct;
